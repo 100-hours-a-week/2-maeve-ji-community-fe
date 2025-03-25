@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시글 수정</title>
+  <link rel="stylesheet" href="EditPost.css">
+</head>
+<body>
+  <header>
+    <button id="backBtn">&#8592;</button>
+    <h1>아무 말 대잔치</h1>
+    <div class="profile">🙋‍♀️</div>
+  </header>
+
+  <main>
+    <h2>게시글 수정</h2>
+    <form id="editPostForm">
+      <div class="input-group">
+        <label>제목*</label>
+        <input type="text" id="title" placeholder="제목을 입력해주세요. (최대 26글자)" maxlength="26">
+      </div>
+
+      <div class="input-group">
+        <label>내용*</label>
+        <textarea id="content" placeholder="내용을 입력해주세요."></textarea>
+      </div>
+
+      <div class="input-group">
+        <label>이미지</label>
+        <input type="file" id="imageUpload">
+        <span id="currentImage"></span>
+      </div>
+
+      <button type="submit" id="updateBtn">수정하기</button>
+    </form>
+  </main>
+
+  <script src="EditPost.js"></script>
+</body>
+</html>

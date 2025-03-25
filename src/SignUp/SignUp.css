@@ -1,10 +1,4 @@
-main {
-    padding: 40px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  body {
+body {
     font-family: 'Arial', sans-serif;
     background-color: #f5f6f8;
     color: #333;
@@ -13,19 +7,41 @@ main {
   }
   
   header {
-    display: flex;
-    justify-content: center;   /* 좌우 공간을 쓰지 않고 가운데 정렬 */
-    align-items: center;
     text-align: center;
     padding: 20px;
     border-bottom: 1px solid #ddd;
   }
   
-
-  #header {
+  main {
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
   }
   
+  h2 {
+    margin-bottom: 20px;
+  }
+  
+  .profile-upload {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  
+  .profile-upload img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
   
   form {
     display: flex;
@@ -39,38 +55,39 @@ main {
     width: 100%;
     margin-bottom: 20px;
   }
-
-  .helper {
-    color: red;
-  }
   
   input {
     width: 100%;
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
-    display: block;
-    margin-top: 5px;
   }
-
   
-#loginBtn {
-    width: 100%;            /* form 기준으로 꽉 채우기 */
+  input:invalid {
+    border-color: red;
+  }
+  
+  .helper {
+    font-size: 12px;
+    color: red;
+  }
+  
+  #signupBtn {
+    width: 100%;
     padding: 12px;
-    background-color: #7F6AEE;
+    background-color: #ACA0EB;
     color: #fff;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    text-align: center;      /* 텍스트 중앙 */
   }
   
-  #loginBtn:disabled {
-    background-color: #ACA0EB;
+  #signupBtn:disabled {
+    background-color: #ddd;
     cursor: not-allowed;
   }
-
-  #signupBtn {
+  
+  #loginMoveBtn {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: #fff;

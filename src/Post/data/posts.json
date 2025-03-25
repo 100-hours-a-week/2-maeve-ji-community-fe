@@ -1,0 +1,33 @@
+{
+    "message": "posts_all_get_success",
+    "data": {
+        "posts": [
+            {
+                "post_id": 3,
+                "title": "제목 3",
+                "author": {
+                    "img_url": "https://image.kr/img.jpg",
+                    "user_id": 3,
+                    "nickname": "yeonwoo3"
+                },
+                "created_at": "2025-03-24T22:26:18.663481",
+                "countRecommend": 0,
+                "countComment": 3,
+                "countView": 0
+            },
+            {
+                "post_id": 2,
+                "title": "제목 2",
+                "author": {
+                    "img_url": "https://image.kr/img.jpg",
+                    "user_id": 3,
+                    "nickname": "yeonwoo3"
+                },
+                "created_at": "2025-03-24T22:26:10.994138",
+                "countRecommend": 0,
+                "countComment": 2,
+                "countView": 0
+            }
+        ]
+    }
+}
