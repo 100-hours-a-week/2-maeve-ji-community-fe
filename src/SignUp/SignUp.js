@@ -82,20 +82,29 @@ function validateForm() {
   signupBtn.style.backgroundColor = valid ? '#7F6AEE' : '#ACA0EB';
 }
 
+// 프로필 이미지
+  if (!profileImageFile) {
+    alert("프로필 이미지는 필수입니다");
+}
+
 // 회원가입 처리 
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
   // 백엔드에 넘길 FormData 만들기
   const formData = new FormData();
-  formData.append('email', email.value.trim());
-  formData.append('password', password.value.trim());
-  formData.append('nickname', nickname.value.trim());
+  const userDto = {
+    email: email.value.trim(),
+    password: password.value.trim(),
+    nickname: nickname.value.trim()
+  };
+  formData.append('userDto', new Blob([JSON.stringify(userDto)], { type: "application/json" }));
+
   if (profileImageFile) {
     formData.append('profileImage', profileImageFile);
   }
 
-  // ✅ FormData 내용 로그 찍기
+  // 로그 찍기
   for (let [key, value] of formData.entries()) {
     console.log(`${key}:`, value);
   }
@@ -109,10 +118,10 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
 
     if (!response.ok) throw new Error('회원가입 실패');
     
-    alert('회원가입 완료! 로그인 페이지로 이동합니다.');
+    // alert('회원가입 완료! 로그인 페이지로 이동합니다.');
     location.href = '../login/login.html';
   } catch (err) {
-    alert('회원가입 실패: ' + err.message);
+    alert('회원가입에 실패하였습니다. ' + err.message);
   }
 });
 

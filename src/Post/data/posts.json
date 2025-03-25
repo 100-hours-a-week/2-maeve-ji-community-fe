@@ -4,7 +4,7 @@
         "posts": [
             {
                 "post_id": 3,
-                "title": "제목 3",
+                "title": "왜DB에서 안 읽어와;;",
                 "author": {
                     "img_url": "https://image.kr/img.jpg",
                     "user_id": 3,

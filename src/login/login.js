@@ -6,26 +6,15 @@ const emailHelper = email.nextElementSibling;
 const passwordHelper = password.nextElementSibling;
 const loginForm = document.getElementById('loginForm');
 
-let users = []; // 유저 데이터 담을 공간
-
-// 페이지 로드시 fetch로 user 데이터 읽기
-fetch('../data/users.json')
-  .then(response => response.json())
-  .then(data => {
-    users = data.users;
-  })
-  .catch(err => console.error('유저 데이터 로드 실패:', err));
-
+// 유효성 검사
 email.addEventListener('input', validate);
 password.addEventListener('input', validate);
 
-// 유효성 검사
 function validate() {
   let valid = true;
   const emailValue = email.value.trim();
   const pwValue = password.value.trim();
 
-  // 이메일 검사
   if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
     emailHelper.textContent = '*올바른 이메일 주소를 입력해주세요. (예: example@example.com)';
     valid = false;
@@ -33,7 +22,6 @@ function validate() {
     emailHelper.textContent = '';
   }
 
-  // 비밀번호 검사
   if (!pwValue) {
     passwordHelper.textContent = '*비밀번호를 입력해주세요.';
     valid = false;
@@ -44,7 +32,6 @@ function validate() {
     passwordHelper.textContent = '';
   }
 
-  // 버튼 색상 및 상태 명세대로 적용
   if (valid) {
     loginBtn.disabled = false;
     loginBtn.style.backgroundColor = '#7F6AEE';
@@ -56,22 +43,41 @@ function validate() {
   }
 }
 
-// 로그인 처리
-loginForm.addEventListener('submit', (e) => {
+// 로그인 API 연동
+loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
+
   const emailValue = email.value.trim();
   const pwValue = password.value.trim();
 
-  const user = users.find(user => user.email === emailValue && user.password === pwValue && !user.deleted);
+  try {
+    const response = await fetch('http://localhost:8080/auth/sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: emailValue, password: pwValue })
+    });
 
-  if (user) {
-    // 로그인 성공 - 세션 저장
-    sessionStorage.setItem('currentUser', JSON.stringify(user));
-    // alert('로그인 성공! 게시글 목록으로 이동합니다.');
-    location.href = '../Post/Posts/Posts.html'; // 게시판 목록 페이지로 이동
-  } else {
-    // 로그인 실패
-    alert('아이디 또는 비밀번호를 확인해주세요');
+    if (response.status === 201) {
+      const data = await response.json();
+      console.log('** 로그인 성공:', data);
+
+      // JWT 토큰, userId 저장 
+      localStorage.setItem('token', data.data.token);
+      localStorage.setItem('userId', data.data.userId);
+      
+
+      location.href = '../Post/Posts/Posts.html'; // 게시판 목록으로 이동
+    } else if (response.status === 401) {
+      alert('아이디 또는 비밀번호가 틀렸습니다.');
+    } else if (response.status === 404) {
+      alert('가입된 사용자가 없습니다.');
+    } else {
+      throw new Error('서버 오류');
+    }
+  } catch (err) {
+    console.error('상태코드: ', response.status);
+    console.error('** 로그인 실패:', err);
+    alert('로그인에 실패하였습니다. 잠시 후 다시 시도해주세요.');
   }
 });
 
@@ -79,25 +85,3 @@ loginForm.addEventListener('submit', (e) => {
 signupBtn.addEventListener('click', () => {
   location.href = '../SignUp/SignUp.html';
 });
-
-
-/*
-fetch('/api/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email: emailValue, password: pwValue })
-})
-.then(response => {
-  if (!response.ok) throw new Error('로그인 실패');
-  return response.json();
-})
-.then(data => {
-  // ✅ 백엔드가 유저 정보 리턴해주면 저장
-  sessionStorage.setItem('currentUser', JSON.stringify(data.user));
-  alert('로그인 성공!');
-  location.href = '../Post/Posts/Posts.html';
-})
-.catch(err => {
-  alert('아이디 또는 비밀번호를 확인해주세요');
-});
-*/
