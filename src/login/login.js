@@ -54,7 +54,8 @@ loginForm.addEventListener('submit', async (e) => {
     const response = await fetch('http://localhost:8080/auth/sessions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: emailValue, password: pwValue })
+      body: JSON.stringify({ email: emailValue, password: pwValue }),
+      credentials: 'include'
     });
 
     if (response.status === 201) {

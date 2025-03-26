@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const postList = document.getElementById('postList');
   let postsData = [];
   let page = 0;
-  const perPage = 3;
+  const perPage = 10;
   let isLoading = false;
 
   // JWT 토큰 가져오기 (localStorage)
