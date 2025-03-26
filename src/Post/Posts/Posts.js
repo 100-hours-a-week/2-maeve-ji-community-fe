@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       card.addEventListener('click', () => {
-        alert(`상세 페이지로 이동 (post_id: ${post.post_id})`);
-        // location.href = `./Post.html?post_id=${post.post_id}`;
+        // alert(`상세 페이지로 이동 (post_id: ${post.post_id})`);
+        location.href = `../Post/Post.html?post_id=${post.post_id}`;
       });
 
       postList.appendChild(card);

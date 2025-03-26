@@ -22,7 +22,27 @@
           <title>게시글 상세</title>
           <link rel="stylesheet" href="Post.css">
         </head>
-        <body>        
+        <body>
+        <!-- 게시글 삭제 모달 -->
+        <div id="deleteModal" class="modal hidden">
+            <p>게시글을 삭제하시겠습니까?<br>삭제한 내용은 복구할 수 없습니다.</p>
+            <div class="modal-btns">
+            <button id="cancelDelete">취소</button>
+            <button id="confirmDelete">확인</button>
+            </div>
+        </div>
+        
+        <!-- 댓글 삭제 모달 -->
+        <div id="commentDeleteModal" class="modal hidden">
+            <p>댓글을 삭제하시겠습니까?</p>
+            <div class="modal-btns">
+            <button id="commentCancelDelete">취소</button>
+            <button id="commentConfirmDelete">확인</button>
+            </div>
+        </div>
+        
+      </div>
+        
           <script src="Post.js"></script>
         </body>
         </html>
@@ -53,7 +73,7 @@
 
             <!-- 게시글 상태 -->
             <div class="post-status">
-                <div class="status-box">123 <br> 좋아요</div>
+                <div class="status-box" id="like-box">123 <br> 좋아요</div>
                 <div class="status-box">123 <br> 조회수</div>
                 <div class="status-box">123 <br> 완료</div>
             </div>
@@ -95,5 +115,7 @@
         </section>
 
     </main>
+
+
 </body>
 </html>

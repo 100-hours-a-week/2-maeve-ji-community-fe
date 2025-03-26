@@ -65,7 +65,6 @@ loginForm.addEventListener('submit', async (e) => {
       // JWT 토큰, userId 저장 
       localStorage.setItem('token', data.data.token);
       localStorage.setItem('userId', data.data.userId);
-      
 
       location.href = '../Post/Posts/Posts.html'; // 게시판 목록으로 이동
     } else if (response.status === 401) {
@@ -81,6 +80,38 @@ loginForm.addEventListener('submit', async (e) => {
     alert('로그인에 실패하였습니다. 잠시 후 다시 시도해주세요.');
   }
 });
+
+
+function fetchUserProfile(userId, token) {
+  fetch(`http://localhost:8080/users/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('유저 정보 조회 실패');
+      return res.json();
+    })
+    .then(userResult => {
+      console.log('유저 정보:', userResult);
+      const img_url = userResult.data.img_url;
+      const nickname = userResult.data.nickname;
+      
+      // ✅ 프로필 이미지와 닉네임도 저장
+      localStorage.setItem('img_url', img_url);
+      localStorage.setItem('nickname', nickname);
+
+      // ✅ 메인 페이지 이동 or 성공 알림
+      alert('로그인 성공!');
+      location.href = '../Posts/Posts.html';
+    })
+    .catch(err => {
+      console.error('유저 정보 불러오기 실패:', err);
+      alert('유저 정보 불러오기 실패');
+    });
+}
+
 
 // 회원가입 이동
 signupBtn.addEventListener('click', () => {
