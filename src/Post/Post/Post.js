@@ -12,8 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const profileIcon = document.querySelector('.profile-icon');
   const userImgUrl = localStorage.getItem('img_url');
-  
-  // 프로필 아이콘 설정 (비동기적으로 처리)
   if (profileIcon) {
     profileIcon.src = userImgUrl ? userImgUrl : '/default-profile.png';
   }
@@ -23,38 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
   let postData;
   let isDeleted = false;
   let targetCommentId = null;
-
-  console.log("불러온 postId:", postId);
-
-  // function fetchPostDetails() {
-  //   if (isDeleted) return;
-  //   fetch(`http://localhost:8080/posts/${postId}`)
-  //     .then(res => {
-  //       if (!res.ok) throw new Error('게시글 조회 실패');
-  //       return res.json();
-  //     })
-  //     .then(data => {
-  //       postData = data.data.data;
-  //       const currentUserId = Number(localStorage.getItem('userId'));
-  //       renderPost(postData, currentUserId);
-  //       renderComments(postData.comments);
-  //     })
-  //     .catch(err => {
-  //       console.error(err);
-  //       alert(err.message);
-  //     });
-  // }
+  let isEditMode = false;
+  let editingCommentId = null;
 
   function fetchPostDetails() {
     if (isDeleted) return;
-  
     const visitedKey = `visited_post_${postId}`;
     const hasVisited = sessionStorage.getItem(visitedKey);
-  
     const url = hasVisited
-      ? `http://localhost:8080/posts/${postId}?count=false`  // 조회수 증가 안 함
-      : `http://localhost:8080/posts/${postId}`;             // 조회수 증가
-  
+      ? `http://localhost:8080/posts/${postId}?count=false`
+      : `http://localhost:8080/posts/${postId}`;
+
     fetch(url)
       .then(res => {
         if (!res.ok) throw new Error('게시글 조회 실패');
@@ -65,8 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentUserId = Number(localStorage.getItem('userId'));
         renderPost(postData, currentUserId);
         renderComments(postData.comments);
-  
-        // 처음 방문한 경우에만 visited 기록
         if (!hasVisited) {
           sessionStorage.setItem(visitedKey, 'true');
         }
@@ -76,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(err.message);
       });
   }
-  
 
   fetchPostDetails();
 
@@ -91,6 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <button class="edit-btn">수정</button>
       <button class="delete-btn">삭제</button>
     ` : '';
+
+    const liked = post.isLikedByCurrentUser;
+    const likeBtnColor = liked ? '#ACA0EB' : '#D9D9D9';
 
     postDetail.innerHTML = `
       <div class="post-header">
@@ -107,11 +84,38 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <p class="post-content">${post.contents}</p>
       <div class="post-status">
-        <div class="status-box">${likes} <br> 좋아요</div>
+        <div class="status-box">
+          <button id="likeBtn" style="background-color: ${likeBtnColor}; padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer;">좋아요</button>
+          <br> ${likes}
+        </div>
         <div class="status-box">${views} <br> 조회수</div>
         <div class="status-box">${comments} <br> 댓글</div>
       </div>
     `;
+
+    const likeBtn = document.getElementById('likeBtn');
+    likeBtn.addEventListener('click', () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const isLiked = likeBtn.style.backgroundColor === 'rgb(172, 160, 235)';
+
+      fetch(`http://localhost:8080/posts/${postId}/likes`, {
+        method: isLiked ? 'DELETE' : 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: isLiked ? null : JSON.stringify({ user_id: Number(localStorage.getItem('userId')) })
+      })
+        .then(res => {
+          if (!res.ok && res.status !== 204) throw new Error('좋아요 요청 실패');
+          fetchPostDetails();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('좋아요 처리 실패');
+        });
+    });
 
     if (isAuthor) {
       postDetail.querySelector('.edit-btn').addEventListener('click', () => {
@@ -140,35 +144,56 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <p class="comment-text">${cmt.comment}</p>
         <div class="comment-actions">
-          ${isAuthor ? `<button class="comment-delete-btn" data-id="${cmt.id}">삭제</button>` : ''}
+          ${isAuthor ? `
+            <button class="comment-edit-btn" data-id="${cmt.id}" data-text="${cmt.comment}">수정</button>
+            <button class="comment-delete-btn" data-id="${cmt.id}">삭제</button>
+          ` : ''}
         </div>
       `;
       commentList.appendChild(commentEl);
-      console.log("✅ 댓글 ID 확인용:", cmt);
-
     });
   }
 
-  // 댓글 등록
-  commentSubmit.addEventListener('click', () => {
-    const commentContent = commentInput.value.trim();
-    if (!commentContent) return;
-    const token = localStorage.getItem('token');
+  commentList.addEventListener('click', (e) => {
+    if (e.target.classList.contains('comment-edit-btn')) {
+      editingCommentId = e.target.dataset.id;
+      const originalText = e.target.dataset.text;
+      commentInput.value = originalText;
+      commentSubmit.textContent = '댓글 수정';
+      isEditMode = true;
+    }
 
-    fetch(`http://localhost:8080/posts/${postId}/comments`, {
-      method: 'POST',
+    if (e.target.classList.contains('comment-delete-btn')) {
+      targetCommentId = e.target.dataset.id;
+      commentDeleteModal.classList.remove('hidden');
+    }
+  });
+
+  commentSubmit.addEventListener('click', () => {
+    const content = commentInput.value.trim();
+    const token = localStorage.getItem('token');
+    if (!content || !token) return;
+
+    const url = isEditMode
+      ? `http://localhost:8080/posts/${postId}/comments/${editingCommentId}`
+      : `http://localhost:8080/posts/${postId}/comments`;
+
+    const method = isEditMode ? 'PATCH' : 'POST';
+
+    fetch(url, {
+      method,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
-      body: JSON.stringify({ comment: commentContent })
+      body: JSON.stringify({ comment: content })
     })
       .then(res => {
-        if (res.status === 201) return res.json();
-        throw new Error('댓글 등록 실패');
-      })
-      .then(() => {
+        if (!res.ok) throw new Error('댓글 등록/수정 실패');
         commentInput.value = '';
+        commentSubmit.textContent = '댓글 등록';
+        isEditMode = false;
+        editingCommentId = null;
         fetchPostDetails();
       })
       .catch(err => {
@@ -177,17 +202,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 
-  // 게시글 삭제
   cancelDelete.addEventListener('click', () => {
     deleteModal.classList.add('hidden');
   });
 
   confirmDelete.addEventListener('click', () => {
     const token = localStorage.getItem('token');
-    if (!token) {
-      alert('로그인이 필요합니다.');
-      return;
-    }
+    if (!token) return;
 
     fetch(`http://localhost:8080/posts/${postId}`, {
       method: 'DELETE',
@@ -208,30 +229,13 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(err => {
         console.error(err);
-        alert('삭제 중 오류 발생');
+        window.location.href = '../Posts/Posts.html';
       });
   });
 
-  // 댓글 삭제 버튼 클릭 시 그 댓글 targetCommentId 세팅하고 모달 열기
-  commentList.addEventListener('click', (e) => {
-    if (e.target.classList.contains('comment-delete-btn')) {
-      targetCommentId = e.target.dataset.id;
-      console.log('선택된 commentId:', targetCommentId);
-      if (!targetCommentId) {
-        console.error('commentId 없음');
-        return;
-      }
-      commentDeleteModal.classList.remove('hidden');
-    }
-  });
-
-  // 댓글 삭제 
   commentConfirmDelete.addEventListener('click', () => {
     const token = localStorage.getItem('token');
-    if (!token || !targetCommentId) {
-      alert('삭제할 댓글이 존재하지 않습니다.');
-      return;
-    }
+    if (!token || !targetCommentId) return;
 
     fetch(`http://localhost:8080/posts/${postId}/comments/${targetCommentId}`, {
       method: 'DELETE',
@@ -250,13 +254,11 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(err => {
         console.error(err);
-        // alert('댓글 삭제 실패');
         commentDeleteModal.classList.add('hidden');
         fetchPostDetails();
       });
   });
 
-  // 댓글 삭제 취소
   commentCancelDelete.addEventListener('click', () => {
     commentDeleteModal.classList.add('hidden');
   });

@@ -71,3 +71,6 @@ body {
     cursor: pointer;
   }
   
+  #content {
+    min-height: 100px;
+  }
