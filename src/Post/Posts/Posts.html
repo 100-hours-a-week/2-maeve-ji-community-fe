@@ -4,12 +4,26 @@
   <meta charset="UTF-8">
   <title>아무 말 대잔치</title>
   <link rel="stylesheet" href="Posts.css">
+  <link rel="stylesheet" href="../../header/header.css">
 </head>
 <body>
-  <header>
-    <h1 id ='header'>아무 말 대잔치</h1>
-    <div class="profile">👤</div>
-  </header>
+  <!-- ✅ id 일치시키기 -->
+  <div id="header-container"></div>
+
+  <script>
+    // ✅ 공통 header 삽입
+    fetch('../../header/header.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('header-container').innerHTML = html;
+
+        // ✅ header.js 동적으로 로드 (module이면 type 설정)
+        const script = document.createElement('script');
+        script.src = '../../header/header.js';
+        script.type = 'module'; // header.js에서 export 쓰면 반드시 필요
+        document.body.appendChild(script);
+      });
+  </script> 
 
   <main>
     <div class="intro">

@@ -5,14 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>게시글 수정</title>
   <link rel="stylesheet" href="EditPost.css">
+  <link rel="stylesheet" href="../../header/header.css">
 </head>
 <body>
-  <header>
-    <button id="backBtn">&#8592;</button>
-    <h1>아무 말 대잔치</h1>
-    <div class="profile">🙋‍♀️</div>
-  </header>
 
+<div id="header-container"></div>
   <main>
     <h2>게시글 수정</h2>
     <form id="editPostForm">
@@ -26,15 +23,32 @@
         <textarea id="content" placeholder="내용을 입력해주세요."></textarea>
       </div>
 
-      <div class="input-group">
-        <label>이미지</label>
-        <input type="file" id="imageUpload">
-        <span id="currentImage"></span>
+      <div class="file-upload-group">
+        <input type="file" id="imageUpload" hidden>
+        <label for="imageUpload" class="custom-file-label">파일 선택</label>
+        <span id="fileName" class="filename-text">현재 이미지: 파일명을 불러오는 중...</span>
       </div>
+      
 
       <button type="button" id="updateBtn">수정하기</button>
     </form>
   </main>
+    <script>
+      // 헤더 동적 로드
+      document.addEventListener('DOMContentLoaded', () => {
+          fetch('../../header/header.html')
+              .then(res => res.text())
+              .then(html => {
+                  document.getElementById('header-container').innerHTML = html;
+
+                  // 헤더 스크립트 동적 로드 (모듈이면 type 설정)
+                  const script = document.createElement('script');
+                  script.src = '../../header/header.js';
+                  script.type = 'module';
+                  document.body.appendChild(script);
+              });
+      });
+  </script>
 
   <script src="EditPost.js"></script>
 </body>

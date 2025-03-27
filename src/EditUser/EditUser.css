@@ -2,8 +2,8 @@ body {
     font-family: 'Arial', sans-serif;
     background-color: #f5f6f8;
     color: #333;
-    padding: 0;
     margin: 0;
+    padding: 0;
   }
   
   header {
@@ -20,12 +20,13 @@ body {
   }
   
   h2 {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
   }
   
+  
   .profile-upload {
-    width: 100px;
-    height: 100px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background-color: #ddd;
     display: flex;
@@ -42,18 +43,66 @@ body {
     object-fit: cover;
     border-radius: 50%;
   }
-  
-  form {
+
+  .profile-section {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .profile-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+  
+  .edit-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #7F6AEE;
+    color: white;
+    padding: 4px 12px;
+    font-size: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  
+  
+  
+  .profile-upload label {
+    position: absolute;
+    bottom: -10px;
+    background-color: #7F6AEE;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  form {
     width: 100%;
     max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .input-group {
     width: 100%;
     margin-bottom: 20px;
+  }
+  
+  label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    display: block;
   }
   
   input {
@@ -63,16 +112,13 @@ body {
     border: 1px solid #ccc;
   }
   
-  input:invalid {
-    border-color: red;
-  }
-  
-  .helper-text {
+  .helper {
     font-size: 12px;
     color: red;
+    margin-top: 4px;
   }
   
-  #signupBtn {
+  #updateBtn {
     width: 100%;
     padding: 12px;
     background-color: #ACA0EB;
@@ -80,20 +126,31 @@ body {
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    margin-bottom: 12px;
   }
   
-  #signupBtn:disabled {
+  #updateBtn:disabled {
     background-color: #ddd;
     cursor: not-allowed;
   }
   
-  #loginMoveBtn {
-    margin-top: 20px;
+  #withdrawBtn {
     padding: 10px 20px;
     background-color: #fff;
     color: #333;
     border: 1px solid #ccc;
     border-radius: 8px;
     cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  #toast {
+    margin-top: 20px;
+    background-color: #7F6AEE;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
   }
   

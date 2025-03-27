@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회원정보수정</title>
+  <link rel="stylesheet" href="EditUser.css" />
+  <link rel="stylesheet" href="../header/header.css"/>
+</head>
+<body>
+
+  <div id="header-container"></div>
+  <main class="container">
+    <h2 class="page-title">회원정보수정</h2>
+    <div class="profile-section">
+      <label for="profileInput" class="profile-label">
+        <img id="previewImage" src="/images/default-profile.png" alt="프로필 사진" class="profile-preview">
+        <div class="edit-overlay">변경</div>
+      </label>
+      <input type="file" id="profileInput" accept="image/*" hidden>
+    </div>
+
+    <form id="editForm" class="edit-form">
+      <label for="email">이메일</label>
+      <input type="email" id="email" value="startupcode@gmail.com" disabled>
+
+      <label for="nickname">닉네임</label>
+      <input type="text" id="nickname" placeholder="닉네임 입력" maxlength="10">
+      <div class="helper-text" id="nicknameHelper"></div>
+
+      <button type="submit" id="submitBtn">수정하기</button>
+      <button type="button" id="withdrawBtn">회원 탈퇴</button>
+    </form>
+
+    <div class="toast hidden" id="toast">수정 완료</div>
+
+    <div class="modal hidden" id="withdrawModal">
+      <p>회원 탈퇴하시겠습니까?<br>탈퇴 시 모든 정보가 삭제됩니다.</p>
+      <div class="modal-btns">
+        <button id="cancelWithdraw">취소</button>
+        <button id="confirmWithdraw">확인</button>
+      </div>
+    </div>
+  </main>
+    <script>
+        // 헤더 동적 로드
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('../header/header.html')
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('header-container').innerHTML = html;
+
+                    // 헤더 스크립트 동적 로드 (모듈이면 type 설정)
+                    const script = document.createElement('script');
+                    script.src = '../header/header.js';
+                    script.type = 'module';
+                    document.body.appendChild(script);
+                });
+        });
+    </script>
+  <script src="EditUser.js"></script>
+</body>
+</html>
