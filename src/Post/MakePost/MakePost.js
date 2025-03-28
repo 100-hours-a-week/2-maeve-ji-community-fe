@@ -68,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('제목:', title.value.trim());
     // console.log('내용:', content.value.ㅋtrim());   
     if (imageUpload.files[0]) {
-      // console.log('이미지 경로: ', imageUpload.files[0]);
-      formData.append('image', imageUpload.files[0]);
+      console.log('이미지 경로: ', imageUpload.files[0]);
+      formData.append('imgUrl', imageUpload.files[0]);
     }
 
       // 로그 찍기

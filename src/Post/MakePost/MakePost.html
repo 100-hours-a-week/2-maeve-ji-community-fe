@@ -25,9 +25,11 @@
       </div>
 
       <div class="input-group">
-        <label>이미지</label>
-        <input type="file" id="imageUpload">
-        <span class="helper">*선택 사항입니다</span>
+        <label for="imageUpload" class="file-upload-label">
+          <span class="file-upload-text">파일 선택</span>
+          <input type="file" id="imageUpload" accept="image/*" hidden>
+        </label>
+        
       </div>
 
       <button type="submit" id="submitBtn" disabled>완료</button>

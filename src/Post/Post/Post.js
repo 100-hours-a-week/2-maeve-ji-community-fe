@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const liked = post.isLikedByCurrentUser;
     const likeBtnColor = liked ? '#ACA0EB' : '#D9D9D9';
+    console.log('이미지 경로: ', post.img_url);
 
     postDetail.innerHTML = `
       <div class="post-header">
@@ -79,9 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <span style="font-weight:bold">${post.author.nickname}</span>
         <div class="post-date">${date}</div>
       </div>
+    ${post.img_url ? `
       <div class="post-image">
-        <img src="${post.img_url || 'https://via.placeholder.com/300'}" alt="게시글 이미지">
+        <img src="${post.img_url}" alt="게시글 이미지">
       </div>
+    ` : ''}
       <p class="post-content">${post.contents}</p>
       <div class="post-status">
         <div class="status-box">
